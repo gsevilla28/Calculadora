@@ -31,11 +31,6 @@
         android:layout_height="wrap_content">
 
         <Button
-            android:layout_weight="1"
-            android:text="C"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/alto_botones"/>
-        <Button
             android:id="@+id/division"
             android:layout_weight="1"
             android:text="/"
@@ -172,11 +167,18 @@
         <Button
             android:id="@+id/cero"
             android:text="0"
-            android:layout_weight="0.25"
+            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="@dimen/alto_botones"/>
         <Button
-            android:layout_weight="0.75"
+            android:gravity="center"
+            android:id="@+id/punto"
+            android:layout_weight="1"
+            android:text="."
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/alto_botones"/>
+        <Button
+            android:layout_weight="1"
             android:id="@+id/borrar"
             android:text="borrar"
             android:layout_width="match_parent"

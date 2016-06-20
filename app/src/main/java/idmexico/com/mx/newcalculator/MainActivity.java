@@ -5,14 +5,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
-import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import static idmexico.com.mx.newcalculator.R.id.binario;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private  TextView resultado;
-    private Button buno, bdos, btres,bcuatro,bcinco,bseis,bsiete,bocho, bnueve, multi, division,resta;
+    private Button buno, bdos, btres,bcuatro,bcinco,bseis,bsiete,bocho, bnueve, multi, division,resta,bpunto;
     String result="";
+    private RadioButton rbbinario;
+    private RadioButton rbdecimal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +42,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.division).setOnClickListener(this);
         findViewById(R.id.multi).setOnClickListener(this);
         findViewById(R.id.igual).setOnClickListener(this);
+        findViewById(R.id.punto).setOnClickListener(this);
+
+
+        rbbinario = (RadioButton) findViewById(R.id.binario);
+        rbdecimal = (RadioButton) findViewById(R.id.decimal);
 
 
         buno= (Button) findViewById(R.id.uno);
@@ -53,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         multi= (Button) findViewById(R.id.multi);
         division = (Button) findViewById(R.id.division);
         resta = (Button) findViewById(R.id.resta);
+        bpunto = (Button) findViewById(R.id.punto);
 
 
 
@@ -98,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 result+="+";
                 break;
             case R.id.resta:
-                result+="+";
+                result+="-";
                 break;
             case R.id.multi:
                 result+="X";
@@ -106,8 +116,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.division:
                 result+="/";
                 break;
+            case R.id.punto:
+                result+=".";
+                break;
             case R.id.igual:
-                result +=" " + realizaOperacion();
+                result +=" = " + realizaOperacion();
                 break;
 
         }
@@ -116,20 +129,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private String realizaOperacion() {
         String texto = resultado.getText().toString();
-        String numero1 = "";
+        String Operacion ="";
 
         try {
+            String completo = texto.replace("+", ",").replace("-", ",").replace("X", ",").replace("/", ",");
+            String[] numeros = completo.split(",");
 
-            if (texto.contains("+") || texto.contains("/") || texto.contains("X") || texto.contains("-")) {
-                numero1 = texto.substring(0, texto.indexOf("+"));
-                resultado.setText(numero1);
+            if (rbdecimal.isChecked()) {
 
+                if (texto.contains("+")) {
+                    Operacion = String.valueOf(Double.parseDouble(numeros[0]) + Double.parseDouble(numeros[1]));
+                } else if (texto.contains("-")) {
+                    Operacion = String.valueOf(Double.parseDouble(numeros[0]) - Double.parseDouble(numeros[1]));
+                } else if (texto.contains("X")) {
+                    Operacion = String.valueOf(Double.parseDouble(numeros[0]) * Double.parseDouble(numeros[1]));
+                } else if (texto.contains("/")) {
+                    Operacion = String.valueOf(Double.parseDouble(numeros[0]) / Double.parseDouble(numeros[1]));
+                } else {
+                    Toast.makeText(getApplicationContext(), "formato incorrecto", Toast.LENGTH_SHORT).show();
+                }
+            } else if (rbbinario.isChecked()) {
+
+                if (texto.contains("+")) {
+                    Operacion = Integer.toBinaryString(Integer.parseInt(numeros[0]) + Integer.parseInt(numeros[1]));
+                }
+                else if (texto.contains("-")) {
+                    Operacion = Integer.toBinaryString(Integer.parseInt(numeros[0]) - Integer.parseInt(numeros[1]));
+                }
             }
         }
         catch (Exception ex){
+            Toast.makeText(getApplicationContext(), "Operacion no valida", Toast.LENGTH_SHORT).show();
 
         }
-        return numero1;
+        return Operacion;
     }
 
     public void onRadioButtonClicked(View view){
@@ -137,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         boolean checked = ((RadioButton)view).isChecked();
 
         switch (view.getId()){
-            case R.id.binario:
+            case binario:
                 if (checked)
                     InhabilitaBotones();
                 break;
@@ -146,6 +179,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     HabilitaBotones();
                 break;
         }
+        resultado.setText("");
+        result="";
 
     }
 
@@ -161,12 +196,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         multi.setEnabled(true);
         division.setEnabled(true);
-        resta.setEnabled(true);
+        bpunto.setEnabled(true);
     }
 
     private void InhabilitaBotones() {
 
-        //buno.setEnabled(false);
+        bpunto.setEnabled(false);
         bdos.setEnabled(false);
         btres.setEnabled(false);
         bcuatro.setEnabled(false);
@@ -178,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         multi.setEnabled(false);
         division.setEnabled(false);
-        resta.setEnabled(false);
+        //resta.setEnabled(false);
 
     }
 }
